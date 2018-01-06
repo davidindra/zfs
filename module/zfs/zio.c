@@ -920,7 +920,7 @@ zio_read(zio_t *pio, spa_t *spa, const blkptr_t *bp,
 {
 	zio_t *zio;
 
-	zfs_blkptr_verify(spa, bp);
+	//zfs_blkptr_verify(spa, bp);
 
 	zio = zio_create(pio, spa, BP_PHYSICAL_BIRTH(bp), bp,
 	    data, size, size, done, private,
