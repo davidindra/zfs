@@ -894,7 +894,7 @@ do_dump(dmu_sendarg_t *dsa, struct send_block_record *data)
 
 		if (arc_read(NULL, spa, bp, arc_getbuf_func, &abuf,
 		    ZIO_PRIORITY_ASYNC_READ, zioflags, &aflags, zb) != 0) {
-			if (zfs_send_corrupt_data) {
+			if (zfs_send_corrupt_data || B_TRUE) {
 				/* Send a block filled with 0x"zfs badd bloc" */
 				abuf = arc_alloc_buf(spa, &abuf, ARC_BUFC_DATA,
 				    blksz);
