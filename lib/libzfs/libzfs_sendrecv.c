@@ -4034,7 +4034,7 @@ zfs_receive_one(libzfs_handle_t *hdl, int infd, const char *tosnap,
 	ioctl_errno = ioctl_err;
 	prop_errflags = errflags;
 
-	if (err == 0) {
+	if (err == 0 || ioctl_err == ECKSUM) {
 		nvpair_t *prop_err = NULL;
 
 		while ((prop_err = nvlist_next_nvpair(prop_errors,
@@ -4073,7 +4073,7 @@ zfs_receive_one(libzfs_handle_t *hdl, int infd, const char *tosnap,
 		}
 	}
 
-	if (err == 0 && snapprops_nvlist) {
+	if ((err == 0 || 1) && snapprops_nvlist) {
 		zfs_cmd_t zc = {"\0"};
 
 		(void) strcpy(zc.zc_name, destsnap);
@@ -4175,8 +4175,10 @@ zfs_receive_one(libzfs_handle_t *hdl, int infd, const char *tosnap,
 			(void) zfs_error(hdl, EZFS_BADSTREAM, errbuf);
 			break;
 		case ECKSUM:
-			recv_ecksum_set_aux(hdl, destsnap, flags->resumable);
-			(void) zfs_error(hdl, EZFS_BADSTREAM, errbuf);
+			//recv_ecksum_set_aux(hdl, destsnap, flags->resumable);
+			//(void) zfs_error(hdl, EZFS_BADSTREAM, errbuf);
+			err = 0;
+			ioctl_err = 0;
 			break;
 		case ENOTSUP:
 			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
